@@ -1,1 +1,29 @@
+plugins {
+    id 'net.fabricmc.fabric-loom' version 'VERSION_LOOM'
+}
 
+group = 'yesman.epicfight'
+version = '1.0.0'
+
+base {
+    archivesName = 'EpicFight-Fabric'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = 'https://maven.fabricmc.net/'
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+}
+
+processResources {
+    inputs.property 'version', project.version
+
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version
+    }
+}
