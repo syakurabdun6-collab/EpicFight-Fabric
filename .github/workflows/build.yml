@@ -1,12 +1,10 @@
-name: Build Epic Fight Fabric
+name: Epic Fight Fabric Port
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -20,42 +18,49 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Inspect Epic Fight source
-        run: |
-          echo "=== SOURCE ZIP FILES ==="
-          ls -lh *.zip || true
-
-      - name: Extract Epic Fight source
-        run: |
-          mkdir -p source-extracted
-          unzip -o EpicFight-Code.zip -d source-extracted
-
-      - name: Analyze all Epic Fight source
-        run: |
-          echo "=== TOTAL JAVA FILES ==="
-          find source-extracted -name "*.java" | wc -l
-
-          echo "=== JAVA FILE LIST ==="
-          find source-extracted -name "*.java" | head -n 100
-
-          echo "=== FORGE IMPORTS ==="
-          grep -RhnE "net\.minecraftforge|net\.minecraft\.forge" source-extracted --include="*.java" | head -n 100 || true
-
-          echo "=== MIXIN FILES ==="
-          find source-extracted -iname "*mixin*.java"
-
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '25'
 
-      - name: Build mod
+      - name: Check source archive
+        run: |
+          echo "=== SOURCE ARCHIVES ==="
+          ls -lh *.zip *.jar || true
+
+      - name: Extract Epic Fight source
+        run: |
+          mkdir -p source-extracted
+          unzip -o EpicFight-Source.zip -d source-extracted
+
+      - name: Analyze complete source
+        run: |
+          echo "=== TOTAL JAVA FILES ==="
+          find source-extracted -name "*.java" | wc -l
+
+          echo "=== ALL JAVA SOURCE PATHS ==="
+          find source-extracted -name "*.java" | sort > source-file-list.txt
+          cat source-file-list.txt
+
+          echo "=== FORGE DEPENDENCIES ==="
+          grep -RhnE \
+            "net\.minecraftforge|net\.minecraft\.forge" \
+            source-extracted --include="*.java" \
+            > forge-dependencies.txt || true
+          cat forge-dependencies.txt
+
+          echo "=== MIXIN FILES ==="
+          find source-extracted -iname "*mixin*.java"
+
+          echo "=== SOURCE DIRECTORY STRUCTURE ==="
+          find source-extracted -type d | sort
+
+      - name: Build Fabric project
         run: gradle build --no-daemon
 
-      - name: Show generated JAR files
+      - name: Show generated JAR
         run: |
-          echo "=== GENERATED JAR FILES ==="
           find build/libs -maxdepth 1 -type f -name "*.jar" -print
 
       - name: Upload build artifacts
@@ -64,3 +69,11 @@ jobs:
           name: EpicFight-Fabric
           path: build/libs/*.jar
           if-no-files-found: error
+
+      - name: Upload source analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: EpicFight-Source-Analysis
+          path: |
+            source-file-list.txt
+            forge-dependencies.txt
