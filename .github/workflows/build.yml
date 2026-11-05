@@ -1,4 +1,3 @@
-
 name: Build Epic Fight Fabric
 
 on:
@@ -23,7 +22,27 @@ jobs:
 
       - name: Inspect Epic Fight source
         run: |
-          unzip -l EpicFight-Source.zip | head -n 80
+          echo "=== SOURCE ZIP FILES ==="
+          ls -lh *.zip || true
+
+      - name: Extract Epic Fight source
+        run: |
+          mkdir -p source-extracted
+          unzip -o EpicFight-Code.zip -d source-extracted
+
+      - name: Analyze all Epic Fight source
+        run: |
+          echo "=== TOTAL JAVA FILES ==="
+          find source-extracted -name "*.java" | wc -l
+
+          echo "=== JAVA FILE LIST ==="
+          find source-extracted -name "*.java" | head -n 100
+
+          echo "=== FORGE IMPORTS ==="
+          grep -RhnE "net\.minecraftforge|net\.minecraft\.forge" source-extracted --include="*.java" | head -n 100 || true
+
+          echo "=== MIXIN FILES ==="
+          find source-extracted -iname "*mixin*.java"
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -35,7 +54,9 @@ jobs:
         run: gradle build --no-daemon
 
       - name: Show generated JAR files
-        run: find build/libs -maxdepth 1 -type f -name "*.jar" -print
+        run: |
+          echo "=== GENERATED JAR FILES ==="
+          find build/libs -maxdepth 1 -type f -name "*.jar" -print
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
