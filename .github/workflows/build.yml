@@ -1,4 +1,4 @@
-name: Epic Fight Fabric Port
+grepepme: Epic Fight Fabric Port
 
 on:
   push:
@@ -44,7 +44,7 @@ jobs:
           cat source-file-list.txt
 
           echo "=== FORGE DEPENDENCIES ==="
-          grep -RhnE \
+          grep -RnE \
             "net\.minecraftforge|net\.minecraft\.forge" \
             source-extracted --include="*.java" \
             > forge-dependencies.txt || true
