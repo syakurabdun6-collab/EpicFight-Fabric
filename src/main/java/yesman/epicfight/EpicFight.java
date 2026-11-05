@@ -2,6 +2,7 @@
 package yesman.epicfight;
 
 import net.fabricmc.api.ModInitializer;
+import yesman.epicfight.registry.ModRegistries;
 
 public class EpicFight implements ModInitializer {
 
@@ -9,6 +10,8 @@ public class EpicFight implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        System.out.println("[Epic Fight] Fabric 26.1.2 initialized!");
+        ModRegistries.initialize();
+
+        System.out.println("[Epic Fight] Fabric initialized!");
     }
 }
