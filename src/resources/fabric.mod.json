@@ -1,5 +1,23 @@
-"entrypoints": {
-  "main": [
-    "yesman.epicfight.EpicFight"
-  ]
+{
+  "schemaVersion": 1,
+  "id": "epicfight",
+  "version": "1.0.0",
+  "name": "Epic Fight Fabric",
+  "description": "Epic Fight porting project for Minecraft Fabric 26.1.2",
+  "authors": [
+    "Yesman",
+    "Epic Fight Fabric Porting Contributors"
+  ],
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "yesman.epicfight.EpicFight"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "26.1.2",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
 }
