@@ -1,29 +1,34 @@
+
 plugins {
-    id 'net.fabricmc.fabric-loom' version 'VERSION_LOOM'
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
 }
 
-group = 'yesman.epicfight'
-version = '1.0.0'
+version = project.mod_version
+group = project.maven_group
 
 base {
-    archivesName = 'EpicFight-Fabric'
+    archivesName = project.archives_base_name
 }
 
 repositories {
     mavenCentral()
-    maven {
-        url = 'https://maven.fabricmc.net/'
-    }
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+
+    implementation "net.fabricmc:fabric-loader:${loader_version}"
+
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
 }
 
-processResources {
-    inputs.property 'version', project.version
-
-    filesMatching('fabric.mod.json') {
-        expand 'version': project.version
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
     }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 25
+    options.encoding = 'UTF-8'
 }
