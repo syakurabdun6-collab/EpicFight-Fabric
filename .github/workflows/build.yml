@@ -29,3 +29,13 @@ jobs:
 
       - name: Build mod
         run: gradle build --no-daemon
+
+      - name: Show generated JAR files
+        run: find build/libs -maxdepth 1 -type f -name "*.jar" -print
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: EpicFight-Fabric
+          path: build/libs/*.jar
+          if-no-files-found: error
