@@ -21,6 +21,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Inspect Epic Fight source
+        run: |
+          unzip -l EpicFight-Source.zip | head -n 80
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
